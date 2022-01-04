@@ -1,0 +1,22 @@
+session_name: scales
+windows:
+  - window_name: code
+    focus: true
+    start-directory: ./
+    panes:
+      - shell_command:
+        - nvim
+  - window_name: cmd1
+    start-directory: ./
+    panes:
+      - shell_command:
+        - clear
+  - window_name: cmd2
+    start-directory: ./
+    panes:
+      - shell_command:
+        - clear
+  - window_name: notes
+    panes:
+      - shell_command:
+        - emacs notes.org
