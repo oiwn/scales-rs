@@ -21,11 +21,11 @@ enum Accidentals { Sharp, Flat, Natural }
 #[derive(Debug)]
 enum ScaleTypes { Maj, Min }
 
-const scale_sharps: [&str; 12] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-const scale_flats: [&str; 12] = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
+const SCALE_SHARPS: [&str; 12] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const SCALE_FLATS: [&str; 12] = ["C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"];
 
-const major_scale_rule: [u8; 7] = [2, 2, 1, 2, 2, 2, 1];  // in semitones
-const nat_minor_scale_rule: [u8; 7] = [2, 1, 2, 2, 1, 2, 2];  // in semitones
+const MAJOR_SCALE_RULE: [u8; 7] = [2, 2, 1, 2, 2, 2, 1];  // in semitones
+const NAT_MIN_SCALE_RULE: [u8; 7] = [2, 1, 2, 2, 1, 2, 2];  // in semitones
 
 #[derive(Debug)]
 struct Scale {
@@ -47,6 +47,10 @@ fn parse_scale(scale_name: &str) -> Result<Scale, &str> {
         Accidentals::Sharp | Accidentals::Flat => scale_name[..2].to_string(),
         Accidentals::Natural => scale_name[..1].to_string() 
     };
+    match key.chars().nth(0).unwrap() {
+        'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' => {},
+        _ => return Err("Wrong key value")
+    }
     let scale_type_substr = match accidental {
         Accidentals::Sharp | Accidentals::Flat => scale_name[2..].to_string(),
         Accidentals::Natural => scale_name[1..].to_string()
@@ -59,8 +63,28 @@ fn parse_scale(scale_name: &str) -> Result<Scale, &str> {
     Ok(Scale { key, accidental, scale_type })
 }
 
-fn notes_in_scale(scale_name: &str) -> String {
-    "A-B-C-D-E-F-G-A".to_string()
+fn notes_in_scale(scale: &Scale) -> Vec<&str> {
+    let rule = match scale.scale_type {
+        ScaleTypes::Maj => MAJOR_SCALE_RULE.iter(),
+        ScaleTypes::Min => NAT_MIN_SCALE_RULE.iter(),
+    };
+    let mut piano = match scale.accidental {
+        Accidentals::Sharp | Accidentals::Natural => SCALE_SHARPS,
+        Accidentals::Flat => SCALE_FLATS,
+    };
+
+    let key_index = piano.iter().position(|&x| x == scale.key).unwrap();
+    piano.rotate_left(key_index);
+
+    let mut count = 0;
+    let normal_rule: Vec<u8> = rule.map(|x| { count += x; count }).collect();
+
+    let mut scale = vec![];
+    scale.push(piano[0 as usize]);
+    for &r in normal_rule[0..6].iter() {
+        scale.push(piano[r as usize]);
+    }
+    scale
 }
 
 fn main() {
@@ -69,8 +93,12 @@ fn main() {
     match cli.command {
         Commands::Scale { name } => {
             let scale_name: String = name.unwrap_or("Cmaj".to_string());
+            let scale: Scale = parse_scale(&scale_name).unwrap();
+            let notes: Vec<&str> = notes_in_scale(&scale);
+
             println!("Scale name: {:?}", scale_name);
-            println!("Scale: {:#?}", parse_scale(&scale_name).unwrap());
+            println!("Scale: {:#?}", scale);
+            println!("Notes: {:?}", notes);
             // println!("Notes in scale {:?} : {:?}", scale_name, notes_in_scale(&scale_name));
         }
         Commands::Chords => {
@@ -78,3 +106,5 @@ fn main() {
         }
     } 
 }
+
+
