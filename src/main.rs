@@ -16,9 +16,9 @@ enum Commands {
     Chords,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum Accidentals { Sharp, Flat, Natural }
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum ScaleTypes { Maj, Min }
 
 const SCALE_SHARPS: [&str; 12] = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
@@ -108,3 +108,42 @@ fn main() {
 }
 
 
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn parse_ok_scales() {
+        let scale = super::parse_scale("Amin").unwrap();
+        assert_eq!(scale.key, "A");
+        assert!(scale.accidental == super::Accidentals::Natural);
+        assert!(scale.scale_type == super::ScaleTypes::Min);
+
+        let scale = super::parse_scale("Cmaj").unwrap();
+        assert_eq!(scale.key, "C");
+        assert!(scale.accidental == super::Accidentals::Natural);
+        assert!(scale.scale_type == super::ScaleTypes::Maj);
+
+        let scale = super::parse_scale("D#min").unwrap();
+        assert_eq!(scale.key, "D#");
+        assert!(scale.accidental == super::Accidentals::Sharp);
+        assert!(scale.scale_type == super::ScaleTypes::Min);
+
+        let scale = super::parse_scale("Abmaj").unwrap();
+        assert_eq!(scale.key, "Ab");
+        assert!(scale.accidental == super::Accidentals::Flat);
+        assert!(scale.scale_type == super::ScaleTypes::Maj);
+    }
+
+    #[test]
+    fn parse_wrong_scale() {
+        let scale = super::parse_scale("");
+        assert!(scale.is_err());
+        let scale = super::parse_scale("Xmin");
+        assert!(scale.is_err());
+        let scale = super::parse_scale("Something completely unrelated");
+        assert!(scale.is_err());
+        let scale = super::parse_scale("A$min");
+        assert!(scale.is_err());
+        let scale = super::parse_scale("A#foo");
+        assert!(scale.is_err());
+    }
+}
