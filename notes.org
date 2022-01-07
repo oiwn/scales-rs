@@ -1,10 +1,12 @@
 #+TITLE: Tasks/Notes/Ideas
 
 * Tasks
-    - [ ] build maj/min chords
+    - [X] build maj/min chords
     - [ ] figure out how to store rules for chords
     - [ ] make main engine as library
     - [ ] rewrite as traits for data structs
     - [ ] frequencies for scales
     - [ ] separate data for chords and scales into different modules
     - [ ] figure out how to handle Cbmaj panic
+    - [ ] add codecov https://github.com/codecov/example-rust
+    - [ ] release build for crates.io ?
