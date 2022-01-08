@@ -28,16 +28,16 @@ fn main() {
     match cli.command {
         Commands::Scale { name } => {
             let scale_name: String = name.unwrap_or("Cmaj".to_string());
-            let scale: Scale = parse_scale(&scale_name).unwrap();
-            let notes: Vec<&str> = notes_in_scale(&scale);
+            let scale: Scale = Scale::parse(&scale_name).unwrap();
+            let notes: Vec<&str> = scale.to_notes();
 
             println!("Scale name: {:?}", scale_name);
             println!("Notes: {:?}", notes);
         }
         Commands::Chord { name } => {
             let chord_name: String = name.unwrap_or("Cmaj".to_string());
-            let chord: Chord = parse_chord(&chord_name).unwrap();
-            let notes: Vec<&str> = notes_in_chord(&chord);
+            let chord: Chord = Chord::parse(&chord_name).unwrap();
+            let notes: Vec<&str> = chord.to_notes();
 
             println!("Chord name: {:?}", chord_name);
             println!("Chord: {:?}", chord);

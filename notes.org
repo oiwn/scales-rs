@@ -5,8 +5,13 @@
     - [X] figure out how to store rules for chords
     - [X] separate data for chords and scales into different module
     - [X] extract common parts of parser function for chords and scales
+    - [X] rewrite as traits for data structs
+    - [X] scale build as struct's method
+    - [X] chord build as struct's method
+    - [ ] tests for scale build
+    - [ ] tests for chord build
+    - [ ] tests for chords parsing
     - [ ] make main engine as library
-    - [ ] rewrite as traits for data structs
     - [ ] frequencies for scales
     - [ ] figure out how to handle Cbmaj panic
     - [ ] add codecov https://github.com/codecov/example-rust
