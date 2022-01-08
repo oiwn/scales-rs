@@ -211,7 +211,7 @@ mod tests {
     }
 
     #[test]
-    fn parse_wrong_scale() {
+    fn parse_wrong_scales() {
         let scale = super::Scale::parse("");
         assert!(scale.is_err());
         let scale = super::Scale::parse("Xmin");
@@ -223,4 +223,47 @@ mod tests {
         let scale = super::Scale::parse("A#foo");
         assert!(scale.is_err());
     }
+
+    #[test]
+    fn parse_ok_chords() {
+        let chord = super::Chord::parse("Amin").unwrap();
+        assert_eq!(chord.key, "A");
+        assert!(chord.accidental == super::Accidentals::Natural);
+        assert!(chord.chord_type == super::ChordTypes::Min);
+
+        let chord = super::Chord::parse("Cmaj").unwrap();
+        assert_eq!(chord.key, "C");
+        assert!(chord.accidental == super::Accidentals::Natural);
+        assert!(chord.chord_type == super::ChordTypes::Maj);
+
+        let chord = super::Chord::parse("D#min").unwrap();
+        assert_eq!(chord.key, "D#");
+        assert!(chord.accidental == super::Accidentals::Sharp);
+        assert!(chord.chord_type == super::ChordTypes::Min);
+
+        let chord = super::Chord::parse("Abmaj").unwrap();
+        assert_eq!(chord.key, "Ab");
+        assert!(chord.accidental == super::Accidentals::Flat);
+        assert!(chord.chord_type == super::ChordTypes::Maj);
+
+        let chord = super::Chord::parse("Cbmaj").unwrap();
+        assert_eq!(chord.key, "Cb");
+        assert!(chord.accidental == super::Accidentals::Flat);
+        assert!(chord.chord_type == super::ChordTypes::Maj);
+    }
+
+    #[test]
+    fn parse_wrong_chords() {
+        let chord = super::Chord::parse("");
+        assert!(chord.is_err());
+        let chord = super::Chord::parse("Xmin");
+        assert!(chord.is_err());
+        let chord = super::Chord::parse("Something completely unrelated");
+        assert!(chord.is_err());
+        let chord = super::Chord::parse("A$min");
+        assert!(chord.is_err());
+        let chord = super::Chord::parse("A#foo");
+        assert!(chord.is_err());
+    }
+
 }

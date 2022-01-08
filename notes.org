@@ -8,9 +8,9 @@
     - [X] rewrite as traits for data structs
     - [X] scale build as struct's method
     - [X] chord build as struct's method
+    - [X] tests for chords parsing
     - [ ] tests for scale build
     - [ ] tests for chord build
-    - [ ] tests for chords parsing
     - [ ] make main engine as library
     - [ ] frequencies for scales
     - [ ] figure out how to handle Cbmaj panic
