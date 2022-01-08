@@ -20,38 +20,38 @@ enum ChordTypes {
     Dim,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Scale {
     key: String,
     accidental: Accidentals,
     scale_type: ScaleTypes,
 }
 
-#[derive(Debug)]
-pub struct Chord {
-    key: String,
-    accidental: Accidentals,
-    chord_type: ChordTypes,
-}
-
-
-pub fn parse_scale(scale_name: &str) -> Result<Scale, &str> {
-    if scale_name.len() < 4 {
-        return Err("Error parsing scale name");
+fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
+    if input.len() < 4 {
+        return Err(format!("Input '{}' is too short", input));
     }
-    let accidental = match scale_name.chars().nth(1) {
+    let accidental = match input.chars().nth(1) {
         Some('#') => Accidentals::Sharp,
         Some('b') => Accidentals::Flat,
         _ => Accidentals::Natural,
     };
+
     let key = match accidental {
-        Accidentals::Sharp | Accidentals::Flat => scale_name[..2].to_string(),
-        Accidentals::Natural => scale_name[..1].to_string(),
+        Accidentals::Sharp | Accidentals::Flat => input[..2].to_string(),
+        Accidentals::Natural => input[..1].to_string(),
     };
+
     match key.chars().nth(0).unwrap() {
         'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' => {}
-        _ => return Err("Wrong key value"),
+        _ => return Err(format!("Wrong key value '{}'", key)),
     }
+
+    Ok((key, accidental))
+}
+
+pub fn parse_scale(scale_name: &str) -> Result<Scale, String> {
+    let (key, accidental) = parse_key_acc(scale_name)?;
     let scale_type_substr = match accidental {
         Accidentals::Sharp | Accidentals::Flat => scale_name[2..].to_string(),
         Accidentals::Natural => scale_name[1..].to_string(),
@@ -59,7 +59,7 @@ pub fn parse_scale(scale_name: &str) -> Result<Scale, &str> {
     let scale_type = match scale_type_substr.as_str() {
         "maj" => ScaleTypes::Maj,
         "min" => ScaleTypes::Min,
-        _ => return Err("Error parsing scale name, wrong scale type"),
+        _ => return Err(format!("Error parsing scale '{}', wrong scale type", scale_name)),
     };
     Ok(Scale {
         key,
@@ -100,23 +100,15 @@ pub fn notes_in_scale(scale: &Scale) -> Vec<&str> {
     scale
 }
 
-pub fn parse_chord(chord_name: &str) -> Result<Chord, &str> {
-    if chord_name.len() < 4 {
-        return Err("Chord len is too small");
-    }
-    let accidental = match chord_name.chars().nth(1) {
-        Some('#') => Accidentals::Sharp,
-        Some('b') => Accidentals::Flat,
-        _ => Accidentals::Natural,
-    };
-    let key = match accidental {
-        Accidentals::Sharp | Accidentals::Flat => chord_name[..2].to_string(),
-        Accidentals::Natural => chord_name[..1].to_string(),
-    };
-    match key.chars().nth(0).unwrap() {
-        'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' => {}
-        _ => return Err("Wrong chord key value"),
-    }
+#[derive(Debug)]
+pub struct Chord {
+    key: String,
+    accidental: Accidentals,
+    chord_type: ChordTypes,
+}
+
+pub fn parse_chord(chord_name: &str) -> Result<Chord, String> {
+    let (key, accidental) = parse_key_acc(chord_name)?;
     let chord_type_substr = match accidental {
         Accidentals::Sharp | Accidentals::Flat => chord_name[2..].to_string(),
         Accidentals::Natural => chord_name[1..].to_string(),
@@ -125,7 +117,7 @@ pub fn parse_chord(chord_name: &str) -> Result<Chord, &str> {
         "maj" => ChordTypes::Maj,
         "min" => ChordTypes::Min,
         "dim" => ChordTypes::Dim,
-        _ => return Err("Wrong chord type"),
+        _ => return Err(format!("Wrong chord type: '{}'", chord_name)),
     };
     Ok(Chord {
         key,
@@ -159,6 +151,32 @@ pub fn notes_in_chord(chord: &Chord) -> Vec<&str> {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn parse_key_acc_ok() {
+        let result = super::parse_key_acc("Amin").unwrap();
+        assert_eq!(result, (String::from("A"), super::Accidentals::Natural));
+
+        let result = super::parse_key_acc("Cmaj").unwrap();
+        assert_eq!(result, (String::from("C"), super::Accidentals::Natural));
+
+        let result = super::parse_key_acc("D#min").unwrap();
+        assert_eq!(result, (String::from("D#"), super::Accidentals::Sharp));
+
+        let result = super::parse_key_acc("Abmaj").unwrap();
+        assert_eq!(result, (String::from("Ab"), super::Accidentals::Flat));
+    }
+
+    #[test]
+    fn parse_key_acc_err() {
+        let result = super::parse_key_acc("");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err().to_string(), String::from("Input '' is too short"));
+
+        let result = super::parse_key_acc("Xmin");
+        assert!(result.is_err());
+        assert_eq!(result.unwrap_err().to_string(), String::from("Wrong key value 'X'"));
+    }
+
     #[test]
     fn parse_ok_scales() {
         let scale = super::parse_scale("Amin").unwrap();

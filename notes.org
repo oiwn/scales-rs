@@ -2,11 +2,13 @@
 
 * Tasks
     - [X] build maj/min chords
-    - [ ] figure out how to store rules for chords
+    - [X] figure out how to store rules for chords
+    - [X] separate data for chords and scales into different module
+    - [X] extract common parts of parser function for chords and scales
     - [ ] make main engine as library
     - [ ] rewrite as traits for data structs
     - [ ] frequencies for scales
-    - [ ] separate data for chords and scales into different modules
     - [ ] figure out how to handle Cbmaj panic
     - [ ] add codecov https://github.com/codecov/example-rust
     - [ ] release build for crates.io ?
+    - [ ] documentation using rustdoc
