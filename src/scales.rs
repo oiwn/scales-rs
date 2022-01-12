@@ -18,6 +18,12 @@ enum ChordTypes {
     Maj,
     Min,
     Dim,
+    Aug,
+    Dom7,
+    Min7,
+    Maj7,
+    Sus2,
+    Sus4,
 }
 
 fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
@@ -100,6 +106,10 @@ impl Scale {
         }
         scale
     }
+
+    pub fn to_string(&self) -> String {
+        self.to_notes().join("-")
+    }
 }
 
 
@@ -121,6 +131,12 @@ impl Chord {
             "maj" => ChordTypes::Maj,
             "min" => ChordTypes::Min,
             "dim" => ChordTypes::Dim,
+            "aug" => ChordTypes::Aug,
+            "dom7" => ChordTypes::Dom7,
+            "min7" => ChordTypes::Min7,
+            "maj7" => ChordTypes::Maj7,
+            "sus2" => ChordTypes::Sus2,
+            "sus4" => ChordTypes::Sus4,
             _ => return Err(format!("Wrong chord type: '{}'", chord_name)),
         };
         Ok(Chord {
@@ -132,9 +148,16 @@ impl Chord {
 
     pub fn to_notes(&self) -> Vec<&str> {
         let rule = match self.chord_type {
-            ChordTypes::Maj => consts::CHORD_MAJ,
-            ChordTypes::Min => consts::CHORD_MIN,
-            ChordTypes::Dim => consts::CHORD_DIM,
+            ChordTypes::Maj => consts::CHORD_MAJ.to_vec(),
+            ChordTypes::Min => consts::CHORD_MIN.to_vec(),
+            ChordTypes::Dim => consts::CHORD_DIM.to_vec(),
+            ChordTypes::Aug => consts::CHORD_AUG.to_vec(),
+            ChordTypes::Dom7 => consts::CHORD_DOM7.to_vec(),
+            ChordTypes::Min7 => consts::CHORD_MIN7.to_vec(),
+            ChordTypes::Maj7 => consts::CHORD_MAJ7.to_vec(),
+            ChordTypes::Sus2 => consts::CHORD_SUS2.to_vec(),
+            ChordTypes::Sus4 => consts::CHORD_SUS4.to_vec(),
+
         };
         let mut piano = match self.accidental {
             Accidentals::Sharp | Accidentals::Natural => consts::NOTES_SHARPS,

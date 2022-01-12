@@ -29,10 +29,9 @@ fn main() {
         Commands::Scale { name } => {
             let scale_name: String = name.unwrap_or("Cmaj".to_string());
             let scale: Scale = Scale::parse(&scale_name).unwrap();
-            let notes: Vec<&str> = scale.to_notes();
 
             println!("Scale name: {:?}", scale_name);
-            println!("Notes: {:?}", notes);
+            println!("Notes: {}", scale.to_string());
         }
         Commands::Chord { name } => {
             let chord_name: String = name.unwrap_or("Cmaj".to_string());
@@ -42,6 +41,7 @@ fn main() {
             println!("Chord name: {:?}", chord_name);
             println!("Chord: {:?}", chord);
             println!("Notes: {:?}", notes);
+            // println!("Notes str: {}", chord.to_str());
         }
     }
 }

@@ -9,6 +9,10 @@
     - [X] scale build as struct's method
     - [X] chord build as struct's method
     - [X] tests for chords parsing
+    - [X] add more chords (dominant 7, Aminor 7, major 7, suspended 2nd, suspended 4th, diminished, augmented)
+    - [ ] setup code coverage on github
+    - [ ] draw a piano?
+    - [ ] README file
     - [ ] tests for scale build
     - [ ] tests for chord build
     - [ ] make main engine as library
