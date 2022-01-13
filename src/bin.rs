@@ -1,9 +1,8 @@
 use clap::{AppSettings, Parser, Subcommand};
 
-mod consts;
-mod scales;
+mod lib;
 
-use scales::*;
+use lib::{Chord, Scale};
 
 #[derive(Parser)]
 #[clap(author, version, about)]

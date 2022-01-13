@@ -14,3 +14,11 @@ opt-level = "z"
 [dependencies]
 lazy_static = {version = "1.4.0"}
 clap = {version = "~3.0", features = ["derive"]}
+
+[lib]
+name = "scales"
+path = "src/lib.rs"
+
+[[bin]]
+name = "scales-cli"
+path = "src/bin.rs"

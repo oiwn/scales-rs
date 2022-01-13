@@ -10,14 +10,14 @@
     - [X] chord build as struct's method
     - [X] tests for chords parsing
     - [X] add more chords (dominant 7, Aminor 7, major 7, suspended 2nd, suspended 4th, diminished, augmented)
+    - [X] make main engine as library
+    - [ ] add codecov https://github.com/codecov/example-rust
     - [ ] setup code coverage on github
-    - [ ] draw a piano?
     - [ ] README file
     - [ ] tests for scale build
     - [ ] tests for chord build
-    - [ ] make main engine as library
     - [ ] frequencies for scales
     - [ ] figure out how to handle Cbmaj panic
-    - [ ] add codecov https://github.com/codecov/example-rust
     - [ ] release build for crates.io ?
     - [ ] documentation using rustdoc
+    - [ ] draw a piano?
