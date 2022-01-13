@@ -12,6 +12,8 @@
     - [X] add more chords (dominant 7, Aminor 7, major 7, suspended 2nd, suspended 4th, diminished, augmented)
     - [X] make main engine as library
     - [ ] add codecov https://github.com/codecov/example-rust
+    - [ ] github workflows https://github.com/BamPeers/rust-ci-github-actions-workflow/
+    - [ ] make release for
     - [ ] setup code coverage on github
     - [ ] README file
     - [ ] tests for scale build
