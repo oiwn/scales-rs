@@ -20,7 +20,6 @@ enum Commands {
     Chord { name: Option<String> },
 }
 
-
 fn main() {
     println!("Scales and Chords little helper");
     let cli = Cli::parse();
@@ -44,4 +43,3 @@ fn main() {
         }
     }
 }
-

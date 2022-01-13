@@ -104,7 +104,12 @@ impl Scale {
         let scale_type = match scale_type_substr.as_str() {
             "maj" => ScaleTypes::Maj,
             "min" => ScaleTypes::Min,
-            _ => return Err(format!("Error parsing scale '{}', wrong scale type", scale_name)),
+            _ => {
+                return Err(format!(
+                    "Error parsing scale '{}', wrong scale type",
+                    scale_name
+                ))
+            }
         };
         Ok(Scale {
             key,
@@ -129,7 +134,8 @@ impl Scale {
 
         // convert rule to count indexes in scale instead if intervals
         let mut count = 0;
-        let index_rule: Vec<u8> = rule.iter()
+        let index_rule: Vec<u8> = rule
+            .iter()
             .map(|x| {
                 count += x;
                 count
@@ -149,7 +155,6 @@ impl Scale {
         self.to_notes().join("-")
     }
 }
-
 
 #[derive(Debug)]
 pub struct Chord {
@@ -195,7 +200,6 @@ impl Chord {
             ChordTypes::Maj7 => CHORD_MAJ7.to_vec(),
             ChordTypes::Sus2 => CHORD_SUS2.to_vec(),
             ChordTypes::Sus4 => CHORD_SUS4.to_vec(),
-
         };
         let mut piano = match self.accidental {
             Accidentals::Sharp | Accidentals::Natural => NOTES_SHARPS,
@@ -236,11 +240,17 @@ mod tests {
     fn parse_key_acc_err() {
         let result = super::parse_key_acc("");
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err().to_string(), String::from("Input '' is too short"));
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            String::from("Input '' is too short")
+        );
 
         let result = super::parse_key_acc("Xmin");
         assert!(result.is_err());
-        assert_eq!(result.unwrap_err().to_string(), String::from("Wrong key value 'X'"));
+        assert_eq!(
+            result.unwrap_err().to_string(),
+            String::from("Wrong key value 'X'")
+        );
     }
 
     #[test]
@@ -326,5 +336,4 @@ mod tests {
         let chord = super::Chord::parse("A#foo");
         assert!(chord.is_err());
     }
-
 }
