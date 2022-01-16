@@ -1,19 +1,9 @@
 [package]
+edition = "2021"
 name = "scales"
 version = "0.1.0"
-edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[profile.release]
-codegen-units = 1
-lto = true
-panic = "abort"
-opt-level = "z"
-
-[dependencies]
-lazy_static = {version = "1.4.0"}
-clap = {version = "~3.0", features = ["derive"]}
 
 [lib]
 name = "scales"
@@ -22,3 +12,15 @@ path = "src/lib.rs"
 [[bin]]
 name = "scales-cli"
 path = "src/bin.rs"
+[features]
+coverage = []
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+
+[dependencies]
+# lazy_static = {version = "1.4.0"}
+clap = {version = "~3.0", features = ["derive"]}
