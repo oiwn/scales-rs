@@ -21,7 +21,7 @@ enum Commands {
 }
 
 fn main() {
-    println!("Scales and Chords little helper");
+    println!("Scales and Chords little helper.");
     let cli = Cli::parse();
     match cli.command {
         Commands::Scale { name } => {
@@ -39,7 +39,6 @@ fn main() {
             println!("Chord name: {:?}", chord_name);
             println!("Chord: {:?}", chord);
             println!("Notes: {:?}", notes);
-            // println!("Notes str: {}", chord.to_str());
         }
     }
 }

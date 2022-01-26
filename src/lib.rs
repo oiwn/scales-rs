@@ -296,6 +296,21 @@ mod tests {
     }
 
     #[test]
+    fn check_notes_in_scale() {
+        let scale = super::Scale::parse("D#min").unwrap();
+        assert_eq!(
+            scale.to_notes().join("-"),
+            String::from("D#-F-F#-G#-A#-B-C#")
+        );
+
+        let scale = super::Scale::parse("Cmaj").unwrap();
+        assert_eq!(scale.to_notes().join("-"), String::from("C-D-E-F-G-A-B"));
+
+        let scale = super::Scale::parse("Amin").unwrap();
+        assert_eq!(scale.to_notes().join("-"), String::from("A-B-C-D-E-F-G"));
+    }
+
+    #[test]
     fn parse_ok_chords() {
         let chord = super::Chord::parse("Amin").unwrap();
         assert_eq!(chord.key, "A");
@@ -335,5 +350,17 @@ mod tests {
         assert!(chord.is_err());
         let chord = super::Chord::parse("A#foo");
         assert!(chord.is_err());
+    }
+
+    #[test]
+    fn check_notes_in_chord() {
+        let chord = super::Chord::parse("D#min").unwrap();
+        assert_eq!(chord.to_notes().join("-"), String::from("D#-F#-A#"));
+
+        let chord = super::Chord::parse("Cmaj").unwrap();
+        assert_eq!(chord.to_notes().join("-"), String::from("C-E-G"));
+
+        let chord = super::Chord::parse("Amin").unwrap();
+        assert_eq!(chord.to_notes().join("-"), String::from("A-C-E"));
     }
 }

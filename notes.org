@@ -13,13 +13,14 @@
     - [X] make main engine as library
     - [X] README file
     - [X] new branch for workflows
+    - [X] github workflows https://github.com/BamPeers/rust-ci-github-actions-workflow/
+    - [X] tests for scale build
+    - [X] tests for chord build
     - [ ] add codecov https://github.com/codecov/example-rust
-    - [ ] github workflows https://github.com/BamPeers/rust-ci-github-actions-workflow/
     - [ ] move tests out of scales rc
-    - [ ] make release for
+    - [ ] make releases as executables
     - [ ] setup code coverage on github
-    - [ ] tests for scale build
-    - [ ] tests for chord build
+    - [ ] add exotic scales
     - [ ] frequencies for scales
     - [ ] figure out how to handle Cbmaj/Fbmin etc. panics
     - [ ] manage theoretical scales
