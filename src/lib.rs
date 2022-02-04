@@ -11,6 +11,15 @@ pub const NOTES_FLATS: [&str; 12] = [
     "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B",
 ];
 
+/* DO I EVEN NEED IT?
+pub const NOTES_THEORETICAL_SHARPS: [&str; 12] = [
+    "C", "C#", "D", "D#", "E", "E#", "F#", "G", "G#", "A", "A#", "B",
+];
+pub const NOTES_THEORETICAL_FLATS: [&str; 12] = [
+    "Cb", "C", "Db", "D", "Eb", "E", "Fb", "F", "Gb", "G", "Ab", "Bb",
+];
+*/
+
 // Scales rules in semitone intervals between notes
 
 pub const SCALE_MAJOR: [u8; 7] = [2, 2, 1, 2, 2, 2, 1];
@@ -68,6 +77,7 @@ fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
     if input.len() < 4 {
         return Err(format!("Input '{}' is too short", input));
     }
+
     let accidental = match input.chars().nth(1) {
         Some('#') => Accidentals::Sharp,
         Some('b') => Accidentals::Flat,
@@ -79,7 +89,8 @@ fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
         Accidentals::Natural => input[..1].to_string(),
     };
 
-    match key.chars().nth(0).unwrap() {
+    // check if note character fit possible variants
+    match key.chars().next().unwrap() {
         'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' => {}
         _ => return Err(format!("Wrong key value '{}'", key)),
     }
@@ -96,7 +107,18 @@ pub struct Scale {
 
 impl Scale {
     pub fn parse(scale_name: &str) -> Result<Scale, String> {
-        let (key, accidental) = parse_key_acc(scale_name)?;
+        let (mut key, accidental) = parse_key_acc(scale_name)?;
+
+        // special cases for Cb/Fb and E#/B#
+
+        match key.as_str() {
+            "Cb" => key = "B".to_string(),
+            "Fb" => key = "E".to_string(),
+            "E#" => key = "F".to_string(),
+            "B#" => key = "C".to_string(),
+            _ => {}
+        };
+
         let scale_type_substr = match accidental {
             Accidentals::Sharp | Accidentals::Flat => scale_name[2..].to_string(),
             Accidentals::Natural => scale_name[1..].to_string(),
@@ -143,8 +165,8 @@ impl Scale {
             .collect();
 
         // extract scale using pre-calculated indexes
-        let mut scale = vec![];
-        scale.push(piano[0 as usize]);
+        let mut scale: Vec<&str> = vec![];
+        scale.push(piano[0_usize]);
         for &r in index_rule[0..6].iter() {
             scale.push(piano[r as usize]);
         }
@@ -275,8 +297,9 @@ mod tests {
         assert!(scale.accidental == super::Accidentals::Flat);
         assert!(scale.scale_type == super::ScaleTypes::Maj);
 
+        // this should be converted to enharmonic scale
         let scale = super::Scale::parse("Cbmaj").unwrap();
-        assert_eq!(scale.key, "Cb");
+        assert_eq!(scale.key, "B");
         assert!(scale.accidental == super::Accidentals::Flat);
         assert!(scale.scale_type == super::ScaleTypes::Maj);
     }
@@ -308,6 +331,38 @@ mod tests {
 
         let scale = super::Scale::parse("Amin").unwrap();
         assert_eq!(scale.to_notes().join("-"), String::from("A-B-C-D-E-F-G"));
+    }
+
+    #[test]
+    fn check_all_possible_scales() {
+        const NOTES: [&str; 7] = ["C", "D", "E", "F", "G", "A", "B"];
+
+        for key in NOTES {
+            let scale = super::Scale::parse(&format!("{}maj", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+
+            let scale = super::Scale::parse(&format!("{}bmaj", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+
+            let scale = super::Scale::parse(&format!("{}#maj", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+
+            let scale = super::Scale::parse(&format!("{}min", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+
+            let scale = super::Scale::parse(&format!("{}bmin", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+
+            let scale = super::Scale::parse(&format!("{}#min", key)).unwrap();
+            assert_ne!(scale.to_string().len(), 0);
+        }
+    }
+
+    #[test]
+    fn check_special_cases() {
+        // let scale = super::Scale::parse("Cbmin").unwrap();
+        // println!("{:?}", scale);
+        // println!("{}", scale.to_string());
     }
 
     #[test]

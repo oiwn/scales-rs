@@ -16,6 +16,9 @@
     - [X] github workflows https://github.com/BamPeers/rust-ci-github-actions-workflow/
     - [X] tests for scale build
     - [X] tests for chord build
+    - [ ] test all possible maj/min scales
+    - [ ] replace Cb/Fb etc to their enharmonic equivalents for scales
+    - [ ] implement relative key calculation
     - [ ] add codecov https://github.com/codecov/example-rust
     - [ ] move tests out of scales rc
     - [ ] make releases as executables
