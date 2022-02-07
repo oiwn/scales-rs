@@ -28,8 +28,15 @@ fn main() {
             let scale_name: String = name.unwrap_or("Cmaj".to_string());
             let scale: Scale = Scale::parse(&scale_name).unwrap();
 
+            let relative_scale: Scale = scale.relative();
+
             println!("Scale name: {:?}", scale_name);
             println!("Notes: {}", scale.to_string());
+            println!(
+                "Realtive scale {} : {}",
+                relative_scale.key,
+                relative_scale.to_string()
+            )
         }
         Commands::Chord { name } => {
             let chord_name: String = name.unwrap_or("Cmaj".to_string());

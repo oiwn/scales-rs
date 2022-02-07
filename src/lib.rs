@@ -25,6 +25,8 @@ pub const NOTES_THEORETICAL_FLATS: [&str; 12] = [
 pub const SCALE_MAJOR: [u8; 7] = [2, 2, 1, 2, 2, 2, 1];
 pub const SCALE_NAT_MINOR: [u8; 7] = [2, 1, 2, 2, 1, 2, 2];
 
+// pub const SCALE_EXOTIC_AUGUMENTED: [u8; 6] = [3, 1, 3, 1, 3, 1];
+
 // Rules for chords
 // https://en.wikipedia.org/wiki/Major_chord
 // https://en.wikipedia.org/wiki/Minor_chord
@@ -89,7 +91,7 @@ fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
         Accidentals::Natural => input[..1].to_string(),
     };
 
-    // check if note character fit possible variants
+    // check if note character (first) fit possible variants
     match key.chars().next().unwrap() {
         'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B' => {}
         _ => return Err(format!("Wrong key value '{}'", key)),
@@ -100,7 +102,7 @@ fn parse_key_acc(input: &str) -> Result<(String, Accidentals), String> {
 
 #[derive(Debug, PartialEq)]
 pub struct Scale {
-    key: String,
+    pub key: String,
     accidental: Accidentals,
     scale_type: ScaleTypes,
 }
@@ -138,6 +140,35 @@ impl Scale {
             accidental,
             scale_type,
         })
+    }
+
+    pub fn relative(&self) -> Scale {
+        // Calculate relative scale (scale sharing same keys but arranged in different order)
+        let scale_type = match self.scale_type {
+            ScaleTypes::Maj => ScaleTypes::Min,
+            ScaleTypes::Min => ScaleTypes::Maj,
+        };
+
+        let mut piano = match self.accidental {
+            Accidentals::Sharp | Accidentals::Natural => NOTES_SHARPS,
+            Accidentals::Flat => NOTES_FLATS,
+        };
+
+        let key_index = piano.iter().position(|&x| x == self.key).unwrap();
+        piano.rotate_left(key_index);
+
+        let key = piano[9].to_string();
+        let accidental = match self.accidental {
+            Accidentals::Sharp => Accidentals::Sharp,
+            Accidentals::Flat => Accidentals::Flat,
+            Accidentals::Natural => Accidentals::Natural,
+        };
+
+        Scale {
+            key,
+            accidental,
+            scale_type,
+        }
     }
 
     pub fn to_notes(&self) -> Vec<&str> {
@@ -347,9 +378,6 @@ mod tests {
             let scale = super::Scale::parse(&format!("{}#maj", key)).unwrap();
             assert_ne!(scale.to_string().len(), 0);
 
-            let scale = super::Scale::parse(&format!("{}min", key)).unwrap();
-            assert_ne!(scale.to_string().len(), 0);
-
             let scale = super::Scale::parse(&format!("{}bmin", key)).unwrap();
             assert_ne!(scale.to_string().len(), 0);
 
@@ -363,6 +391,35 @@ mod tests {
         // let scale = super::Scale::parse("Cbmin").unwrap();
         // println!("{:?}", scale);
         // println!("{}", scale.to_string());
+    }
+
+    #[test]
+    fn check_relative_scale_cmaj_to_amin_and_back() {
+        let scale = super::Scale::parse("Cmaj").unwrap();
+        let relative_scale = scale.relative();
+
+        assert_eq!(relative_scale.to_string(), "A-B-C-D-E-F-G".to_string());
+
+        let scale_notes: std::collections::HashSet<&str> = scale.to_notes().into_iter().collect();
+        let relative_notes: std::collections::HashSet<&str> =
+            relative_scale.to_notes().into_iter().collect();
+        assert_eq!(scale_notes, relative_notes);
+
+        let scale = super::Scale::parse("Amin").unwrap();
+        let relative_scale = scale.relative();
+
+        assert_eq!(relative_scale.to_string(), "C-D-E-F-G-A-B".to_string());
+
+        let scale_notes: std::collections::HashSet<&str> = scale.to_notes().into_iter().collect();
+        let relative_notes: std::collections::HashSet<&str> =
+            relative_scale.to_notes().into_iter().collect();
+        assert_eq!(scale_notes, relative_notes);
+    }
+
+    #[test]
+    fn test_all_relative_scales() {
+        const NOTES: [&str; 7] = ["C", "D", "E", "F", "G", "A", "B"];
+        const SCALE_TYPES: [&str; 2] = ["maj", "min"];
     }
 
     #[test]
