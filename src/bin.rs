@@ -33,8 +33,8 @@ fn main() {
             println!("Scale name: {:?}", scale_name);
             println!("Notes: {}", scale.to_string());
             println!(
-                "Realtive scale {} : {}",
-                relative_scale.key,
+                "Realtive scale {}: {}",
+                relative_scale.name(),
                 relative_scale.to_string()
             )
         }

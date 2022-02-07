@@ -49,7 +49,7 @@ pub const CHORD_MAJ7: [u8; 4] = [0, 4, 7, 11];
 pub const CHORD_SUS2: [u8; 3] = [0, 2, 7];
 pub const CHORD_SUS4: [u8; 3] = [0, 5, 7];
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 enum Accidentals {
     Sharp,
     Flat,
@@ -144,11 +144,10 @@ impl Scale {
 
     pub fn relative(&self) -> Scale {
         // Calculate relative scale (scale sharing same keys but arranged in different order)
-        let scale_type = match self.scale_type {
-            ScaleTypes::Maj => ScaleTypes::Min,
-            ScaleTypes::Min => ScaleTypes::Maj,
-        };
-
+        // From wiki:
+        // The tonic of the relative minor is the sixth scale degree of the major scale,
+        // while the tonic of the relative major is the third degree of the minor scale.
+        // The minor key starts three semitones below its relative major
         let mut piano = match self.accidental {
             Accidentals::Sharp | Accidentals::Natural => NOTES_SHARPS,
             Accidentals::Flat => NOTES_FLATS,
@@ -157,11 +156,16 @@ impl Scale {
         let key_index = piano.iter().position(|&x| x == self.key).unwrap();
         piano.rotate_left(key_index);
 
-        let key = piano[9].to_string();
-        let accidental = match self.accidental {
-            Accidentals::Sharp => Accidentals::Sharp,
-            Accidentals::Flat => Accidentals::Flat,
-            Accidentals::Natural => Accidentals::Natural,
+        let key = match self.scale_type {
+            ScaleTypes::Maj => piano[9].to_string(),
+            ScaleTypes::Min => piano[3].to_string(),
+        };
+
+        let accidental = self.accidental.clone();
+
+        let scale_type = match self.scale_type {
+            ScaleTypes::Maj => ScaleTypes::Min,
+            ScaleTypes::Min => ScaleTypes::Maj,
         };
 
         Scale {
@@ -202,6 +206,15 @@ impl Scale {
             scale.push(piano[r as usize]);
         }
         scale
+    }
+
+    pub fn name(&self) -> String {
+        // return scale name as a String
+        let scale_type = match self.scale_type {
+            ScaleTypes::Maj => "maj",
+            ScaleTypes::Min => "min",
+        };
+        self.key.to_owned() + scale_type
     }
 
     pub fn to_string(&self) -> String {
@@ -420,6 +433,22 @@ mod tests {
     fn test_all_relative_scales() {
         const NOTES: [&str; 7] = ["C", "D", "E", "F", "G", "A", "B"];
         const SCALE_TYPES: [&str; 2] = ["maj", "min"];
+
+        // cartesian product
+        let iter = SCALE_TYPES
+            .into_iter()
+            .flat_map(|y| NOTES.into_iter().map(move |x| (x, y)));
+
+        for sc in iter {
+            let scale = super::Scale::parse(&format!("{}{}", sc.0, sc.1)).unwrap();
+            let relative_scale = scale.relative();
+
+            let scale_notes: std::collections::HashSet<&str> =
+                scale.to_notes().into_iter().collect();
+            let relative_notes: std::collections::HashSet<&str> =
+                relative_scale.to_notes().into_iter().collect();
+            assert_eq!(scale_notes, relative_notes);
+        }
     }
 
     #[test]

@@ -20,10 +20,10 @@
     - [X] replace Cb/Fb etc to their enharmonic equivalents for scales
     - [X] add codecov https://github.com/codecov/example-rust
     - [X] figure out how to handle Cbmaj/Fbmin etc. panics
+    - [X] implement relative key calculation
     - [ ] split dependencies for library (nothing) and binary (clap)
     - [ ] release build for crates.io ?
     - [ ] rust docs for library
-    - [ ] implement relative key calculation
     - [ ] command to print exotic scales
     - [ ] api from key struct. `key.nat_min().to_string()`
     - [ ] move tests out of scales rc
@@ -31,6 +31,6 @@
     - [ ] setup code coverage on github
     - [ ] add exotic scales
     - [ ] frequencies for scales
-    - [ ] manage theoretical scales
+    - [ ] manage theoretical scales ?
     - [ ] move constants to separate file
     - [ ] documentation using rustdoc
