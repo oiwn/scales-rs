@@ -16,17 +16,21 @@
     - [X] github workflows https://github.com/BamPeers/rust-ci-github-actions-workflow/
     - [X] tests for scale build
     - [X] tests for chord build
-    - [ ] test all possible maj/min scales
-    - [ ] replace Cb/Fb etc to their enharmonic equivalents for scales
-    - [ ] implement relative key calculation
-    - [ ] add codecov https://github.com/codecov/example-rust
+    - [X] test all possible maj/min scales
+    - [X] replace Cb/Fb etc to their enharmonic equivalents for scales
+    - [X] add codecov https://github.com/codecov/example-rust
+    - [X] figure out how to handle Cbmaj/Fbmin etc. panics
+    - [X] implement relative key calculation
+    - [ ] split dependencies for library (nothing) and binary (clap)
+    - [ ] release build for crates.io ?
+    - [ ] rust docs for library
+    - [ ] command to print exotic scales
+    - [ ] api from key struct. `key.nat_min().to_string()`
     - [ ] move tests out of scales rc
     - [ ] make releases as executables
     - [ ] setup code coverage on github
     - [ ] add exotic scales
     - [ ] frequencies for scales
-    - [ ] figure out how to handle Cbmaj/Fbmin etc. panics
-    - [ ] manage theoretical scales
+    - [ ] manage theoretical scales ?
     - [ ] move constants to separate file
-    - [ ] release build for crates.io ?
     - [ ] documentation using rustdoc
